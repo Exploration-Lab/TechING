@@ -1,7 +1,10 @@
 # TechING
 
-This is the official Github repo of the paper:  
+<img src="TechING_overview.png">
 
+**Picture**: Overview of TechING
+
+This repository contains the official Pytorch implementation of the following paper:  
 ***TechING: Towards Real World Technical Image Understanding via VLMs***
 
 **Authors:** *Tafazzul Nadeem\*, Bhavik Shangari\*, Manish Rai, Gagan Raj Gupta, Ashutosh Modi*
@@ -24,6 +27,3 @@ the best all-round performance across all baseline models. On real-world images,
 human evaluation reveals that we achieve minimum compilation errors across all 
 baselines in 7 out of 8 diagram types and improve the average F1 score of Llama 
 3.2 11B-instruct by 6.97x.*
-
-The following figure gives a complete overview of our paper:
-<img src="TechING_overview.png">
