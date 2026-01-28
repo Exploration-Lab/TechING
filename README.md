@@ -28,6 +28,38 @@ human evaluation reveals that we achieve minimum compilation errors across all
 baselines in 7 out of 8 diagram types and improve the average F1 score of Llama 
 3.2 11B-instruct by 6.97x.*
 
+## Training Methodology
+We fine-tuned Llama3.2-11B-Vision-Instruct using LoRA (image encoder as well as
+text decoder) on the combination of Primary and Self Supervision tasks (described below)
+using D1 and D2 corpus of [TechING](https://huggingface.co/datasets/Exploration-Lab/TechING) dataset.
+
+**Primary Tasks**
+1. **Image2Code**: Generating corresponding [Mermaid](https://mermaid.js.org/) code for a given image.
+2. **Description2Code**: Converting natural language descriptions into Mermaid code.
+3. **Image2Description**: Generating Descriptions from technical diagram images.
+4. **Image Enhancement via Prompt**: Generating Mermaid code of the updated image, given
+   an image and a natural language enhancement prompt.
+
+**Self Supervision Tasks**
+1. **Image Enhancement via Description**: Given an image along with a textual
+   description of the target image, produce code that reflects the enhanced description.
+2. **Code Enhancement via Prompt**: Given a Mermaid code along with an enhancement
+   prompt, update the code accordingly.
+3. **Code Enhancement via Description**: Given a Mermaid code snippet along with a natural
+  language description of the target image, enhance the code to accurately reflect
+  the changes present in the description.
+4. **Positive/Negative Image–Code Pair Q&A**: Predict given image–code pair
+   constitutes a valid match or a mismatch.
+5. **Partial Match Image–Code Pair Q&A**: Identify partial matches between incomplete
+   and complete image-code pairs.
+
+## Evaluation Results
+The radar charts present ROUGE-L performance across the 
+three primary tasks on the D1 test set, comparing LLama-VL-TUG 
+against baselines of comparable model size. Detailed results are 
+provided in our paper, [TechING: Towards Real World Technical Image Understanding via VLMs](https://arxiv.org/abs/2601.18238).
+<img src="evaluation_results.png">
+
 ## Citation
 
 [**TechING: Towards Real World Technical Image Understanding via VLMs**](https://2026.eacl.org/), In the 19th Conference of the 
