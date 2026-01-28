@@ -76,4 +76,4 @@ European Chapter of the Association for Computational Linguistics (EACL) to be h
 }
 ```
 
-* Equal Contribution
+\*Equal Contribution
