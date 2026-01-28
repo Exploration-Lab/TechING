@@ -1,10 +1,10 @@
-# TechING
+# TechING (Technical Image Understanding)
 
 <img src="TechING_overview.png">
 
 **Picture**: Overview of TechING
 
-This repository contains the official Pytorch implementation of the following paper:  
+This repository contains the official implementation of the following paper:  
 ***TechING: Towards Real World Technical Image Understanding via VLMs***
 
 **Authors:** *Tafazzul Nadeem\*, Bhavik Shangari\*, Manish Rai, Gagan Raj Gupta, Ashutosh Modi*
@@ -27,3 +27,19 @@ the best all-round performance across all baseline models. On real-world images,
 human evaluation reveals that we achieve minimum compilation errors across all 
 baselines in 7 out of 8 diagram types and improve the average F1 score of Llama 
 3.2 11B-instruct by 6.97x.*
+
+## Citation
+
+[**TechING: Towards Real World Technical Image Understanding via VLMs**](https://2026.eacl.org/), In the 19th Conference of the 
+European Chapter of the Association for Computational Linguistics (EACL) to be held in Rabat, Morocco, from March 24–29, 2026.
+```
+@misc{nadeem2026techingrealworldtechnical,
+      title={TechING: Towards Real World Technical Image Understanding via VLMs}, 
+      author={Tafazzul Nadeem and Bhavik Shangari and Manish Rai and Gagan Raj Gupta and Ashutosh Modi},
+      year={2026},
+      eprint={2601.18238},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2601.18238}, 
+}
+```
