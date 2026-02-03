@@ -1,6 +1,6 @@
 # TechING (Technical Image Understanding)
 
-<img src="TechING_overview.png">
+<img src="images/TechING_overview.png">
 
 **Picture**: Overview of TechING
 
@@ -58,7 +58,7 @@ The radar charts present ROUGE-L performance across the
 three primary tasks on the D1 test set, comparing LLama-VL-TUG 
 against baselines of comparable model size. Detailed results are 
 provided in our paper, [TechING: Towards Real World Technical Image Understanding via VLMs](https://arxiv.org/abs/2601.18238).
-<img src="evaluation_results.png">
+<img src="images/evaluation_results.png">
 
 ## Citation
 
