@@ -16,7 +16,7 @@ import random
 from transformers import set_seed as hf_set_seed
 import numpy as np
 
-from utils.hf_data_download import load_teching_dataset
+from utils.hf_dataset_download import load_teching_dataset
 
 def set_seed(seed=42):
     random.seed(seed)
