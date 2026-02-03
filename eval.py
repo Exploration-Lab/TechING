@@ -2,8 +2,24 @@ import argparse
 
 def main(args):
     if args.task == "image2code":
-        from baselines_eval.llama.image2code import image2code
-        image2code(args)
+        if args.model_name == "llama":
+            from baselines_eval.llama.image2code import image2code
+            image2code(args)
+        elif args.model_name == "gemma":
+            from baselines_eval.gemma.image2code import image2code
+            image2code(args)
+        elif args.model_name == "gpt":
+            from baselines_eval.gpt.image2code import image2code
+            image2code(args)
+        elif args.model_name == "minicpm":
+            from baselines_eval.minicpm.image2code import image2code
+            image2code(args)
+        elif args.model_name == "qwen":
+            from baselines_eval.qwen.image2code import image2code
+            image2code(args)
+        else:
+            raise ValueError(f"Unknown model name: {args.model_name}")
+            
     elif args.task == "desc2code":
         from baselines_eval.llama.desc_to_code import main as desc_to_code_main
         desc_to_code_main(args)
