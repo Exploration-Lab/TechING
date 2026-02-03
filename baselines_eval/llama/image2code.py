@@ -30,23 +30,6 @@ def set_seed(seed=42):
     torch.backends.cudnn.benchmark = False
     hf_set_seed(seed)
 
-# Assuming processor and model are already loaded before running this script
-# from transformers import YourModel, YourProcessor
-
-# class DiagramDataset(Dataset):
-#     def __init__(self, image_dir, diag_type):
-#         self.image_paths = [
-#         os.path.join(image_dir, f"{diag_type}Diagram{i}.png") for i in range(500)
-#         ]
-
-#     def __len__(self):
-#         return len(self.image_paths)
-
-#     def __getitem__(self, idx):
-#         image_path = self.image_paths[idx]
-#         image = Image.open(image_path).convert("RGB")
-#         return image, image_path
-
 class DiagramDataset(Dataset):
     def __init__(self, hf_dataset):
         self.dataset = hf_dataset
@@ -57,11 +40,11 @@ class DiagramDataset(Dataset):
     def __getitem__(self, idx):
         row = self.dataset[idx]
         image = row["Image"].convert("RGB")
-        mermaid_code = row["Mermaid Code"]
-        return image, mermaid_code
+        # mermaid_code = row["Mermaid Code"]
+        return image
 
 def collate_fn(batch, processor, prompt_template):
-    images, paths = zip(*batch)
+    images = batch
     messages = [
         {"role": "user", "content": [
             {"type": "image"},
@@ -76,7 +59,7 @@ def collate_fn(batch, processor, prompt_template):
         return_tensors="pt",
         padding=True
     )
-    return inputs, paths
+    return inputs
 
 def image2code(args):
     
@@ -106,8 +89,8 @@ Just provide the Mermaid code in this format:
     dataset = DiagramDataset(hf_dataset)
 
     def dynamic_collate(batch):
-        inputs, paths = collate_fn(batch, processor, prompt)
-        return inputs.to(device), paths
+        inputs = collate_fn(batch, processor, prompt)
+        return inputs.to(device)
 
     dataloader = DataLoader(
         dataset,
@@ -119,7 +102,7 @@ Just provide the Mermaid code in this format:
     responses = []
     with torch.no_grad():
         set_seed(args.seed)
-        for inputs, paths in tqdm(dataloader):
+        for inputs in tqdm(dataloader):
             outputs = model.generate(**inputs, 
                                      max_new_tokens=300, 
                                      temperature=0.9)
@@ -128,24 +111,9 @@ Just provide the Mermaid code in this format:
                 cleaned = decoded.split('<|end_header_id|>')[-1].split('<|eot_id|>')[0].strip()
                 print(cleaned)
                 responses.append(cleaned)
-
+    # Save results to JSON
     df = pd.DataFrame(responses, columns=["Generated Code"])
-    output_path = os.path.join(args.model_name, f"{args.diag_type}_{args.task}_Responses.json")
+    os.makedirs("baselines_eval/llama/results", exist_ok=True)
+    output_path = os.path.join("baselines_eval/llama/results", f"{args.diag_type}_{args.task}_Responses.json")
     df.to_json(output_path, orient='records', lines=False, indent=4)
     print(f"Saved results to {output_path}")
-
-# if __name__ == "__main__":
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument("--seed", type=int, default=89)
-#     parser.add_argument("--diag_type", type=str, default="Block", help="Type of diagram to process")
-#     parser.add_argument("--image_folder", type=str, required=True, help="Path to the folder containing input images")
-#     parser.add_argument("--output_dir", type=str, default="./Output", help="Directory to save output JSON")
-#     parser.add_argument("--device", type=int, default=0, help="CUDA device ID")
-#     parser.add_argument("--batch_size", type=int, default=4, help="Batch size for inference")
-#     parser.add_argument("--max_tokens", type=int, default=300, help="Maximum number of tokens to generate")
-#     args = parser.parse_args()
-#     main(args)
-
-# Example command to run the script
-
-# python3 ./baselines_evaluation/Llama/image_to_code/image_to_code.py --seed 89 --diag_type Block --image_folder ./evaluation_set_freezed --output_dir ./baselines_evaluation/Llama/image_to_code/results --device 0 --batch_size 1 --max_tokens 300
