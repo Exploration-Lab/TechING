@@ -52,6 +52,31 @@ using D1 and D2 corpus of [TechING](https://huggingface.co/datasets/Exploration-
    constitutes a valid match or a mismatch.
 5. **Partial Match Image–Code Pair Q&A**: Identify partial matches between incomplete
    and complete image-code pairs.
+## How to run experiments
+
+### Training Arguments (train.py)
+
+### Evaluation Arguments (eval.py)
+
+| Argument | Description | Possible Values |
+|----------|-------------|---------|
+| `--seed` | Random seed for reproducibility | `Any number` |
+| `--diag_type` | Diagram type | `Block` `C4` `Class` `Flowchart` `Graph` `Packet` `Sequence` `State` |
+| `--model` | Model name | `llama` `gemma` `qwen` `minicpm` `gpt` `llamavltug` |
+| `--task` | Task type | `image2code` `desc2code` `image2desc` |
+| `--dataset` | Dataset identifier | `D1` `D3`|
+| `--device` | GPU device ID | `0` `1` `0,1,2` `0,2` `etc` |
+
+**Example Usage**
+```bash
+python eval.py \
+  --seed 89 \
+  --diag_type Block \
+  --model llama \
+  --task image2code \
+  --dataset d1 \
+  --device 0
+```
 
 ## Evaluation Results
 The radar charts present ROUGE-L performance across the 
