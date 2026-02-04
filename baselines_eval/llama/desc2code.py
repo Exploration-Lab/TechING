@@ -120,3 +120,13 @@ Just provide the Mermaid code in this format:
     output_path = os.path.join("baselines_eval/llama/results", f"{args.diag_type}_{args.task}_Responses.json")
     df.to_json(output_path, orient='records', lines=False, indent=4)
     print(f"Saved results to {output_path}")
+
+    # Score the results
+    scores = get_scores(args, hf_dataset, output_path)
+    print("Evaluation Scores:")
+    print(f"BLEU: {scores[0]}")
+    print(f"SacreBLEU: {scores[1]}")
+    print(f"METEOR: {scores[2]}")
+    print(f"CHR-F: {scores[3]}")
+    print(f"BLEURT: {scores[4]}")
+    print(f"ROUGE-L: {scores[5]}")

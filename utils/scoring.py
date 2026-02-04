@@ -29,15 +29,25 @@ def extract_first_mermaid_code(text):
     
     return "No code found"  # Return "No code found" if no mermaid code is found
 
-def score_image2code(args, hf_dataset, file_path):
-    print("Scoring image2code results...")
+def get_scores(args, hf_dataset, file_path):
+    if args.task == "image2code":
+        print("Scoring image2code results...")
+    elif args.task == "desc2code":
+        print("Scoring desc2code results...")
+    else:
+        print("Scoring code2desc results...")
+
     os.environ["CUDA_VISIBLE_DEVICES"] = args.device
     device = torch.device(f"cuda" if torch.cuda.is_available() else "cpu")
     df_response = pd.read_json(file_path)
 
-    # Apply the function to the DataFrame
-    df_response["cleaned_mermaid_code"] = df_response["Generated Code"].apply(extract_first_mermaid_code)
-
+    if args.task == "image2code" or args.task == "desc2code":
+        print("Extracting mermaid code from responses...")
+        # Apply the function to the DataFrame
+        df_response["cleaned_mermaid_code"] = df_response["Generated Code"].apply(extract_first_mermaid_code)
+    else: # code2desc task
+        df_response["Generated Description"] = df_response["Generated Description"]
+    
     tokenizer = AutoTokenizer.from_pretrained("Elron/bleurt-base-512")
     bleurt_model = AutoModelForSequenceClassification.from_pretrained("Elron/bleurt-base-512").to(device)
     bleurt_model.eval()
@@ -48,8 +58,12 @@ def score_image2code(args, hf_dataset, file_path):
     meteor = evaluate.load('meteor')
     chrf = evaluate.load('chrf')
 
-    df_true = pd.DataFrame(hf_dataset["Mermaid Code"], columns=["Mermaid Code"])
-
+    # True labels
+    if args.task == "image2code" or args.task == "desc2code":
+        df_true = pd.DataFrame(hf_dataset["Mermaid Code"], columns=["Mermaid Code"])
+    else:
+        df_true = pd.DataFrame(hf_dataset["Description"], columns=["Description"])
+    
     bleu_score_list = []
     sacrebleu_score_list = []
     meteor_score_list = []

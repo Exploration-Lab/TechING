@@ -17,7 +17,7 @@ from transformers import set_seed as hf_set_seed
 import numpy as np
 
 from utils.hf_dataset_download import load_teching_dataset
-from utils.scoring import score_image2code
+from utils.scoring import get_scores
 
 def set_seed(seed=42):
     random.seed(seed)
@@ -120,7 +120,7 @@ Just provide the Mermaid code in this format:
     print(f"Saved results to {output_path}")
 
     # Score the results
-    scores = score_image2code(args, hf_dataset, output_path)
+    scores = get_scores(args, hf_dataset, output_path)
     print("Evaluation Scores:")
     print(f"BLEU: {scores[0]}")
     print(f"SacreBLEU: {scores[1]}")
