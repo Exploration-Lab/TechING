@@ -1,0 +1,8 @@
+[
+    {
+        "Generated Code":"```mermaid\n\ngraph LR\n    [Private Banking] --> [Corporate Banking]\n    [Private Banking] --> [Venture Capital]\n    [Private Banking] --> [Private Equity]\n    [Private Equity] --> [Investment Banking]\n    [Corporate Banking] --> [Investment Banking]\n    [Asset Management] --> [Investment Banking]\n    [Investment Banking] --> {\"label\": \"tests\", \"title\": \"\"}\n```"
+    },
+    {
+        "Generated Code":"```mermaid\ngraph LR\n    Phoenix[Phoenix] --> Chicago[Chicago] --> {is produced in}\n    Phoenix --> {is found in} --> Jacksonville[Jacksonville]\n    Jacksonville --> {is found in} --> San Josie[San Jose]\n    Jacksonville --> {is found in} --> Los Angeles[Los Angeles]\n```"
+    }
+]

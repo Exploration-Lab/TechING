@@ -10,7 +10,8 @@ from tqdm import tqdm
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader
 
-from transformers import pipeline, AutoModelForImageTextToText, AutoProcessor
+from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor
+from qwen_vl_utils import process_vision_info
 from accelerate import Accelerator
 import random
 from transformers import set_seed as hf_set_seed
@@ -31,42 +32,41 @@ def set_seed(seed=42):
     torch.backends.cudnn.benchmark = False
     hf_set_seed(seed)
 
+# Assuming processor and model are already loaded before running this script
+# from transformers import YourModel, YourProcessor
+
 class DiagramDataset(Dataset):
-    def __init__(self, args, hf_dataset):
+    def __init__(self, hf_dataset):
         self.dataset = hf_dataset
-        self.args = args
 
     def __len__(self):
         return len(self.dataset)
 
     def __getitem__(self, idx):
         row = self.dataset[idx]
-        if self.args.dataset.upper() == "D1":
-            image = row["Image"].convert("RGB")
-        elif self.args.dataset.upper() == "D3":
-            image = row["Handdrawn_Diag"].convert("RGB")
+        desc = row["Description"]
         # mermaid_code = row["Mermaid Code"]
-        return image
+        return desc
 
-def collate_fn(batch, processor, prompt_template):
-    images = batch
+def collate_fn(args, batch, processor, prompt_template):
+    descriptions = batch
+
     messages = [
-        {"role": "user", "content": [
-            {"type": "image"},
-            {"type": "text", "text": prompt_template}
-        ]}
+        {"role": "user", "content": prompt_template.format(summary=s, diag=args.diag_type)}
+        for s in descriptions
     ]
-    input_text = processor.apply_chat_template(messages, add_generation_prompt=True)
-    inputs = processor(
-        images=list(images),
-        text=[input_text] * len(images),
-        add_special_tokens=False,
-        return_tensors="pt",
-        padding=True
+    # Prepare inputs
+    text = processor.apply_chat_template(
+        messages, tokenize=False, add_generation_prompt=True
     )
+    image_inputs, video_inputs = process_vision_info(messages)
+    inputs = processor(
+        text=[text], images=image_inputs, videos=video_inputs, padding=True, return_tensors="pt"
+        )
+    
     return inputs
 
-def image2code(args):
+def desc2code(args):
     
     load_dotenv()
     os.environ['HF_TOKEN']= os.getenv("HF_ACCESS_TOKEN")
@@ -74,11 +74,14 @@ def image2code(args):
     device = torch.device(f"cuda" if torch.cuda.is_available() else "cpu")
 
     # Load model & processor
-    processor = AutoProcessor.from_pretrained("meta-llama/Llama-3.2-11B-Vision-Instruct", device_map="auto")
-    model = AutoModelForImageTextToText.from_pretrained("meta-llama/Llama-3.2-11B-Vision-Instruct",  device_map="auto")
+    processor = AutoProcessor.from_pretrained("Qwen/Qwen2.5-VL-7B-Instruct", device_map="auto")
+    model = Qwen2_5_VLForConditionalGeneration.from_pretrained("Qwen/Qwen2.5-VL-7B-Instruct", torch_dtype="auto", device_map="auto")
     model.eval()
-    prompt = f"""I am giving you a {args.diag_type} diagram in the form of an image. 
-Analyze the diagram carefully and provide the Mermaid code for the diagram.
+    prompt = """You are provided with the following summary of a {diag} diagram:
+
+{summary}
+
+Analyze the summary carefully and provide the Mermaid code for the corresponding diagram.
 Do not provide steps for your analysis or any other information.
 Just provide the Mermaid code in this format:
 
@@ -91,10 +94,10 @@ Just provide the Mermaid code in this format:
         diag_type=args.diag_type, 
         split="test"
         )
-    dataset = DiagramDataset(args, hf_dataset)
+    dataset = DiagramDataset(hf_dataset)
 
     def dynamic_collate(batch):
-        inputs = collate_fn(batch, processor, prompt)
+        inputs = collate_fn(args, batch, processor, prompt)
         return inputs.to(device)
 
     dataloader = DataLoader(
@@ -108,14 +111,16 @@ Just provide the Mermaid code in this format:
     with torch.no_grad():
         set_seed(args.seed)
         for inputs in tqdm(dataloader):
-            outputs = model.generate(**inputs, 
-                                     max_new_tokens=300, 
-                                     temperature=0.9)
-            for output in outputs:
-                decoded = processor.decode(output)
-                cleaned = decoded.split('<|end_header_id|>')[-1].split('<|eot_id|>')[0].strip()
-                # print(cleaned)
-                responses.append(cleaned)
+            generated_ids = model.generate(**inputs, max_new_tokens=300,
+                                           temperature=0.9)
+            generated_ids_trimmed = [
+                out_ids[len(in_ids):] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
+            ]
+            response = processor.batch_decode(
+                generated_ids_trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=False
+            )
+            responses.append(response[0])
+            # print(f"Generated Mermaid Code:\n{response[0]}\n")
     # Save results to JSON
     df = pd.DataFrame(responses, columns=["Generated Code"])
     os.makedirs(f"baselines_eval/{args.model_name}/results", exist_ok=True)

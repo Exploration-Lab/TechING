@@ -1,0 +1,11 @@
+[
+    {
+        "Generated Description":"The topological summary of the diagram is as follows:\n\nThere are 6 blocks in the diagram:\n1. Private Banking\n2. Corporate Banking\n3. Venture Capital\n4. Investment Banking\n5. Asset Management\n6. Private Equity\n\nThe relationships between the blocks are as follows:\n1. Relation from 'Private Equity' to 'Investment Banking' with no edge label.\n2. Relation from 'Investment Banking' to 'Asset Management' with edge label 'is owned by'.\n3. Relation from 'Corporation Banking' to 'Investment Banking' with edge label 'tests'."
+    },
+    {
+        "Generated Description":"The topological summary of the diagram is as follows:\n\nThere are 5 blocks in the diagram:\n1. Chicago\n2. Phoenix\n3. San Jose\n4. Los Angeles\n5. Jacksonville\n\nThe relationships between the blocks are as follows:\n1. Relation from 'Chicago' to 'Phoenix' with label 'is produced in'.\n2. Relation from 'San Jose' to 'Los Angeles' with label 'is found in'.\n3. Relation from 'Jacksonville' to 'Phoenix' with label 'is produced in'."
+    },
+    {
+        "Generated Description":"The topological summary of the diagram is as follows:\n\nThere are 5 blocks in the diagram:\n1. Marketing\n2. Operations Management\n3. Management Enterprise\n4. Information Systems\n5. Finance\n6. Business Analytics\n\nThe relationships between the blocks are as follows:\n1. Relation from 'Marketing' to 'Management Enterprise' with no edge label.\n2. Relation from 'Business Analytics' to 'Information Systems' with no edge label.\n3. Relation from 'Operations Management' to 'Information Systems' with no edge label.\n4. Relation from 'Management Enterprise' to 'Finance' with no edge label.\n5. Relation from 'Management Enterprise' to 'Information Systems' with no edge label."
+    }
+]

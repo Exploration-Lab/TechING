@@ -44,7 +44,7 @@ class DiagramDataset(Dataset):
         # mermaid_code = row["Mermaid Code"]
         return desc
 
-def collate_fn(batch, processor, prompt_template, args):
+def collate_fn(args, batch, processor, prompt_template):
     summaries = batch
     messages = [
         {"role": "user", "content": prompt_template.format(summary=s, diag=args.diag_type)}
@@ -93,7 +93,7 @@ Just provide the Mermaid code in this format:
     dataset = DiagramDataset(hf_dataset)
 
     def dynamic_collate(batch):
-        inputs = collate_fn(batch, processor, prompt, args)
+        inputs = collate_fn(args, batch, processor, prompt)
         return inputs.to(device)
 
     dataloader = DataLoader(
