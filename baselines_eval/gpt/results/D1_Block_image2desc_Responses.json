@@ -1,0 +1,5 @@
+[
+    {
+        "Generated Description":"The topological summary of the diagram is as follows:\n\nThere are 6 blocks in the diagram:\n1. Private Banking\n2. Corporate Banking\n3. Investment Banking\n4. Asset Management\n5. Venture Capital\n6. Private Equity\n\nThe relationships between the blocks are as follows:\n1. Relation from 'Private Banking' to 'Corporate Banking' with no edge label.\n2. Relation from 'Private Banking' to 'Investment Banking' with no edge label.\n3. Relation from 'Venture Capital' to 'Private Banking' with no edge label.\n4. Relation from 'Investment Banking' to 'Asset Management' labeled as 'is owned by'.\n5. Relation from 'Investment Banking' to 'Corporate Banking' with no edge label."
+    }
+]

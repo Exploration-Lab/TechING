@@ -40,7 +40,10 @@ class DiagramDataset(Dataset):
 
     def __getitem__(self, idx):
         row = self.dataset[idx]
-        image = row["Image"].convert("RGB")
+        if args.dataset.upper() == "D1":
+            image = row["Image"].convert("RGB")
+        elif args.dataset.upper() == "D3":
+            image = row["Handdrawn_Diag"].convert("RGB")
         # mermaid_code = row["Mermaid Code"]
         return image
 
@@ -115,7 +118,7 @@ Just provide the Mermaid code in this format:
     # Save results to JSON
     df = pd.DataFrame(responses, columns=["Generated Code"])
     os.makedirs(f"baselines_eval/{args.model_name}/results", exist_ok=True)
-    output_path = os.path.join(f"baselines_eval/{args.model_name}/results", f"{args.diag_type}_{args.task}_Responses.json")
+    output_path = os.path.join(f"baselines_eval/{args.model_name}/results", f"{args.dataset.upper()}_{args.diag_type}_{args.task}_Responses.json")
     df.to_json(output_path, orient='records', lines=False, indent=4)
     print(f"Saved results to {output_path}")
 

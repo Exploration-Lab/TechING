@@ -35,7 +35,7 @@ def get_scores(args, hf_dataset, file_path):
     elif args.task == "desc2code":
         print("Scoring desc2code results...")
     else:
-        print("Scoring code2desc results...")
+        print("Scoring image2desc results...")
 
     os.environ["CUDA_VISIBLE_DEVICES"] = args.device
     device = torch.device(f"cuda" if torch.cuda.is_available() else "cpu")

@@ -1,0 +1,11 @@
+[
+    {
+        "Generated Code":"```mermaid\ngraph LR\n    A[Iron Man] -- played --> B[Robert Downey Jr]\n```"
+    },
+    {
+        "Generated Code":"```mermaid\ngraph LR\n    A[Books] -- written by --> B[Author]\n```"
+    },
+    {
+        "Generated Code":"```mermaid\ngraph TD;\n    A[Heart] -->|pumps| B[Body];\n```"
+    }
+]

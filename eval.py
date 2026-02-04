@@ -23,7 +23,7 @@ def main(args):
         else:
             raise ValueError(f"Unknown model name: {args.model_name}")
 
-    elif args.task == "desc2code":
+    elif args.task == "desc2code" and args.dataset.upper() == "D1":
         if args.model_name == "llama":
             from baselines_eval.llama.desc2code import desc2code
             desc2code(args)
@@ -45,7 +45,7 @@ def main(args):
         else:
             raise ValueError(f"Unknown model name: {args.model_name}")
 
-    elif args.task == "image2desc":
+    elif args.task == "image2desc" and args.dataset.upper() == "D1":
         if args.model_name == "llama":
             from baselines_eval.llama.image2desc import image2desc
             image2desc(args)
@@ -67,7 +67,7 @@ def main(args):
         else:
             raise ValueError(f"Unknown model name: {args.model_name}")
     else:
-        raise ValueError(f"Unknown task: {args.task}")
+        raise ValueError(f"Unknown task: {args.task} for the given dataset")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

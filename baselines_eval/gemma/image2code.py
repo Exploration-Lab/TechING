@@ -64,7 +64,10 @@ Just provide the Mermaid code in this format:
         )
     responses = []
     for idx in tqdm(range(len(hf_dataset))):
-        image = hf_dataset[idx]["Image"]
+        if args.dataset.upper() == "D1":
+            image = hf_dataset[idx]["Image"]
+        elif args.dataset.upper() == "D3":
+            image = hf_dataset[idx]["Handdrawn_Diag"]
         text = prompt
         messages = [
             {
@@ -98,7 +101,7 @@ Just provide the Mermaid code in this format:
     # Save results to JSON
     df = pd.DataFrame(responses, columns=["Generated Code"])
     os.makedirs(f"baselines_eval/{args.model_name}/results", exist_ok=True)
-    output_path = os.path.join(f"baselines_eval/{args.model_name}/results", f"{args.diag_type}_{args.task}_Responses.json")
+    output_path = os.path.join(f"baselines_eval/{args.model_name}/results", f"{args.dataset.upper()}_{args.diag_type}_{args.task}_Responses.json")
     df.to_json(output_path, orient='records', lines=False, indent=4)
     print(f"Saved results to {output_path}")
 
