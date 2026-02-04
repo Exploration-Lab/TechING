@@ -39,29 +39,29 @@ class DiagramDataset(Dataset):
 
     def __getitem__(self, idx):
         row = self.dataset[idx]
-        image = row["Image"].convert("RGB")
+        desc = row["Description"]
         # mermaid_code = row["Mermaid Code"]
-        return image
+        return desc
 
-def collate_fn(batch, processor, prompt_template):
-    images = batch
+def collate_fn(batch, processor, prompt_template, args):
+    summaries = batch
     messages = [
-        {"role": "user", "content": [
-            {"type": "image"},
-            {"type": "text", "text": prompt_template}
-        ]}
+        {"role": "user", "content": prompt_template.format(summary=s, diag=args.diag_type)}
+        for s in summaries
     ]
-    input_text = processor.apply_chat_template(messages, add_generation_prompt=True)
+    input_texts = processor.apply_chat_template(
+        messages, add_generation_prompt=True
+    )
     inputs = processor(
-        images=list(images),
-        text=[input_text] * len(images),
+        text=input_texts,
         add_special_tokens=False,
         return_tensors="pt",
-        padding=True
+        padding=True,
+        truncation=True,
     )
     return inputs
 
-def image2code(args):
+def desc2code(args):
     
     load_dotenv()
     os.environ['HF_TOKEN']= os.getenv("HF_ACCESS_TOKEN")
@@ -72,8 +72,11 @@ def image2code(args):
     processor = AutoProcessor.from_pretrained("meta-llama/Llama-3.2-11B-Vision-Instruct", device_map="auto")
     model = AutoModelForImageTextToText.from_pretrained("meta-llama/Llama-3.2-11B-Vision-Instruct",  device_map="auto")
     model.eval()
-    prompt = f"""I am giving you a {args.diag_type} diagram in the form of an image. 
-Analyze the diagram carefully and provide the Mermaid code for the diagram.
+    prompt = """You are provided with the following summary of a {diag} diagram:
+
+{summary}
+
+Analyze the summary carefully and provide the Mermaid code for the corresponding diagram.
 Do not provide steps for your analysis or any other information.
 Just provide the Mermaid code in this format:
 
@@ -89,7 +92,7 @@ Just provide the Mermaid code in this format:
     dataset = DiagramDataset(hf_dataset)
 
     def dynamic_collate(batch):
-        inputs = collate_fn(batch, processor, prompt)
+        inputs = collate_fn(batch, processor, prompt, args)
         return inputs.to(device)
 
     dataloader = DataLoader(
