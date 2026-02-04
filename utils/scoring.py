@@ -80,7 +80,7 @@ def get_scores(args, hf_dataset, file_path):
         try:
             bleu_score = bleu.compute(predictions=[generated_code], references=[[ground_truth]])['bleu']
         except:
-            print(i)
+            # print(i)
             bleu_score = 0
         sacrebleu_score = sacrebleu.compute(predictions=[generated_code], references=[[ground_truth]])['score']
         rouge_score = rouge.compute(predictions=[generated_code], references=[ground_truth])['rougeL']
