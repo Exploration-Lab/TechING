@@ -17,6 +17,9 @@ def main(args):
         elif args.model_name == "qwen":
             from baselines_eval.qwen.image2code import image2code
             image2code(args)
+        elif args.model_name == "llamavltug":
+            from baselines_eval.llamavltug.image2code import image2code
+            image2code(args)
         else:
             raise ValueError(f"Unknown model name: {args.model_name}")
 
@@ -36,6 +39,9 @@ def main(args):
         elif args.model_name == "qwen":
             from baselines_eval.qwen.desc2code import desc2code
             desc2code(args)
+        elif args.model_name == "llamavltug":
+            from baselines_eval.llamavltug.desc2code import desc2code
+            desc2code(args)
         else:
             raise ValueError(f"Unknown model name: {args.model_name}")
 
@@ -54,6 +60,9 @@ def main(args):
             image2desc(args)
         elif args.model_name == "qwen":
             from baselines_eval.qwen.image2desc import image2desc
+            image2desc(args)
+        elif args.model_name == "llamavltug":
+            from baselines_eval.llamavltug.image2desc import image2desc
             image2desc(args)
         else:
             raise ValueError(f"Unknown model name: {args.model_name}")
