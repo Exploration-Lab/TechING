@@ -74,9 +74,9 @@ def get_scores(args, hf_dataset, file_path):
     for i in tqdm.tqdm(range(0, len(df_response))):
         ground_truth = df_true.iloc[i, 0]
         generated_code = df_response.iloc[i, 0]
-        if i == 0 or i == 1:
-            print(ground_truth)
-            print(generated_code)
+        # if i == 0 or i == 1:
+        #     print(ground_truth)
+        #     print(generated_code)
         try:
             bleu_score = bleu.compute(predictions=[generated_code], references=[[ground_truth]])['bleu']
         except:
@@ -108,5 +108,5 @@ def get_scores(args, hf_dataset, file_path):
     score_columns = ['bleu', 'sacrebleu', 'meteor', 'chrf', 'bleurt', 'rouge']  # List of score columns
     average_scores = df[score_columns].mean()
     mean_values = average_scores.tolist()
-    print(mean_values[0], mean_values[1], mean_values[2], mean_values[3], mean_values[4], mean_values[5])
+    # print(mean_values[0], mean_values[1], mean_values[2], mean_values[3], mean_values[4], mean_values[5])
     return mean_values

@@ -1,0 +1,8 @@
+[
+    {
+        "Generated Code":"```mermaid\ngraph TD\n    InvestmentBanking --> AssetManagement(\"is owned by\")\n    InvestmentBanking --> PrivateBanking(\"tests\")\n    VentureCapital --> PrivateBanking\n    PrivateEquity --> InvestmentBanking\n    CorporateBanking --> PrivateBanking\n    InvestmentBanking --> CorporateBanking\n```"
+    },
+    {
+        "Generated Code":"```mermaid\ngraph LR\n    Chicago -- buys --> Jacksonville\n    Phoenix -- is produced in --> Chicago\n    Phoenix -- is found in --> Los Angeles\n    Jacksonville --> Los Angeles\n    Jacksonville --> Phoenix\n    San Jose --> Los Angeles\n```"
+    }
+]
