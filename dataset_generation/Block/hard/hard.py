@@ -105,6 +105,8 @@ def connect_blocks_randomly(matrix, noEdges):
                     count += 1
                     if count > 20:
                         return connections
+            # print(block1coord, block2coord)
+            # Code to make sure that if we connect those two blocks the edge doesn't intersect with any other block
             x, y = block1coord
             s, t = block2coord
             del_x = abs(x - s)
@@ -127,6 +129,19 @@ def connect_blocks_randomly(matrix, noEdges):
         
     return connections
 
+# Update the dataset with new rows
+def update_dataset(df, image_path, mermaid_code, topological_summary):
+    new_row = {
+        "Image": [image_path],
+        "Mermaid Code": [mermaid_code],
+        "Description": [topological_summary]  # Placeholder for description
+    }
+    new_row = pd.DataFrame(new_row)
+
+    # Append the new row using concat
+    df = pd.concat([df, new_row], ignore_index=True)
+    return df
+
 # Develop the mermaid code, save it to test file and generate it's mermaid image
 def write_mermaid_code(position_matrix, connections, columns):
     # Mermaid syntax as a string
@@ -144,6 +159,23 @@ columns {columns}
 
     return mermaid_code
 
+def save_image_and_code(mermaid_code, counter):
+    # File name to save as .mmd
+    os.makedirs("MermaidImageHard", exist_ok=True)
+    os.makedirs("MermaidCodeHard", exist_ok=True)
+    # File name to save as .mmd
+    code_file_name = f"./MermaidCodeHard/BlockDiagram{counter}.mmd"
+    image_file_name = f"./MermaidImageHard/BlockDiagram{counter}.png"
+    # Saving the string to a file
+    with open(code_file_name, "w") as file:
+        file.write(mermaid_code)
+    command = f"mmdc -i {code_file_name} -o {image_file_name} -s 2"
+        # Running the command
+    result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    print(result.stdout)
+    
+    return image_file_name
+
 def get_blocks_and_edges(mermaid_code):
     # Extract block names (with multi-word names)
     block_dict = {match[0]: match[1] for match in re.findall(r'(\w+)\["([^"]+)"\]', mermaid_code)}
@@ -155,7 +187,7 @@ def get_blocks_and_edges(mermaid_code):
     # Extract simple edges (without labels)
     simple_edges = re.findall(r'(\w+)\s*-->\s*(\w+)', mermaid_code)
     edges_with_labels.extend([(block_dict.get(edge[0], edge[0]), '', block_dict.get(edge[1], edge[1])) for edge in simple_edges if edge not in edges])
-    
+
     return block_dict, edges_with_labels
 
 def get_topological_summary(block_dict, edges_with_labels):    
@@ -178,42 +210,14 @@ There are {len(block_dict)} blocks in the diagram:
     return topological_summary
 
 def generate_dataset_sample():
-    noBlocks, noEdges = blocks_and_edges(minBlocks=4, maxBlocks=6)
-    blockNames = block_names(noBlocks) 
-    position_matrix = matrix(7,4)
+    noBlocks, noEdges = blocks_and_edges(minBlocks=4, maxBlocks=6) 
+    blockNames = block_names(noBlocks)  
+    position_matrix = matrix(7,4) 
     position_matrix = place_blocks(position_matrix, blockNames)
     connections = connect_blocks_randomly(position_matrix, noEdges)
     mermaid_code = write_mermaid_code(position_matrix, connections, columns=4) 
-    return mermaid_code
-
-def save_image_and_code(mermaid_code, counter):
-    os.makedirs("MermaidImage1", exist_ok=True)
-    os.makedirs("MermaidCode1", exist_ok=True)
-    # File name to save as .mmd
-    code_file_name = f"./MermaidCode1/BlockDiagram{counter}.mmd"
-    image_file_name = f"./MermaidImage1/BlockDiagram{counter}.png"
-    # Saving the string to a file
-    with open(code_file_name, "w") as file:
-        file.write(mermaid_code)
-    command = f"mmdc -i {code_file_name} -o {image_file_name} -s 2"
-        # Running the command
-    result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    # print(result.stdout)
     
-    return image_file_name
-
-# Update the dataset with new rows
-def update_dataset(df, image_path, mermaid_code, topological_summary):
-    new_row = {
-        "Image": [image_path],
-        "Mermaid Code": [mermaid_code],
-        "Description": [topological_summary]
-    }
-    new_row = pd.DataFrame(new_row)
-
-    # Append the new row using concat
-    df = pd.concat([df, new_row], ignore_index=True)
-    return df
+    return mermaid_code
 
 # If the sample generated from the previous code block is acceptable, save the image and append to the dataset by running this block
 from tqdm import tqdm
@@ -226,5 +230,4 @@ for _ in tqdm(range(10)):
     topological_summary = get_topological_summary(block_dict, edges_with_labels)
     df = update_dataset(df, image_path, mermaid_code, topological_summary)
     counter += 1
-
-df.to_json("./BlockDiagramDataset1.json", orient="records", indent=4)
+df.to_json("./BlockDiagramDatasetHard.json", orient="records", indent=4)

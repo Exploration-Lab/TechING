@@ -209,7 +209,7 @@ def generate_dataset_sample():
 from tqdm import tqdm
 counter = 0
 df = pd.DataFrame(columns=["Image", "Mermaid Code", "Description"])
-for _ in tqdm(range(2)):
+for _ in tqdm(range(10)):
     mermaid_code = generate_dataset_sample()
     image_path = save_image_and_code(mermaid_code, counter)
     block_dict, edges_with_labels = get_blocks_and_edges(mermaid_code)
