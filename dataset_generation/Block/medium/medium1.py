@@ -215,8 +215,6 @@ def update_dataset(df, image_path, mermaid_code, topological_summary):
     df = pd.concat([df, new_row], ignore_index=True)
     return df
 
-# If the sample generated from the previous code block is acceptable, save the image and append to the dataset by running this block
-from tqdm import tqdm
 counter = 0
 df = pd.DataFrame(columns=["Image", "Mermaid Code", "Description"])
 for _ in tqdm(range(10)):

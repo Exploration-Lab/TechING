@@ -454,8 +454,6 @@ def generate_dataset_sample():
     
     return mermaid_code
 
-# If the sample generated from the previous code block is acceptable, save the image and append to the dataset by running this block
-from tqdm import tqdm
 counter = 0
 df = pd.DataFrame(columns=["Image", "Mermaid Code", "Description"])
 for _ in tqdm(range(2)):

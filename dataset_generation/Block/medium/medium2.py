@@ -206,7 +206,6 @@ def generate_dataset_sample():
     mermaid_code = write_mermaid_code(position_matrix, connections, columns=6) 
     return mermaid_code
 
-from tqdm import tqdm
 counter = 0
 df = pd.DataFrame(columns=["Image", "Mermaid Code", "Description"])
 for _ in tqdm(range(10)):
