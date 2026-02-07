@@ -28,6 +28,8 @@ human evaluation reveals that we achieve minimum compilation errors across all
 baselines in 7 out of 8 diagram types and improve the average F1 score of Llama 
 3.2 11B-instruct by 6.97x.*
 
+\*Equal Contribution
+
 ## Training Methodology
 We fine-tuned Llama3.2-11B-Vision-Instruct using LoRA (image encoder as well as
 text decoder) on the combination of Primary and Self Supervision tasks (described below)
@@ -54,9 +56,51 @@ using D1 and D2 corpus of [TechING](https://huggingface.co/datasets/Exploration-
    and complete image-code pairs.
 ## How to run experiments
 
-### Training Arguments (train.py)
+### 1. Training (train/train.py):
+To train [meta-llama/Llama-3.2-11B-Vision](https://huggingface.co/meta-llama/Llama-3.2-11B-Vision) (LLama-VL-TUG base model) on [TechING](https://huggingface.co/datasets/Exploration-Lab/TechING) dataset, run the following bash script.  
+**Example Usage**
+```bash
+torchrun --nproc_per_node=1 -m train.train \
+  --output_dir checkpoints/ \
+  --per_device_train_batch_size 1 \
+  --gradient_accumulation_steps 1 \
+  --learning_rate 2e-5 \
+  --weight_decay 0.05 \
+  --num_train_epochs 1 \
+  --lr_scheduler_type cosine \
+  --warmup_ratio 0.2 \
+  --save_strategy steps \
+  --save_steps 1000 \
+  --logging_steps 10 \
+  --dataloader_num_workers 8 \
+  --report_to none \
+  --run_name training \
+  --seed 89 \
+  --lora_rank 32 \
+  --lora_alpha 16 \
+  --lora_dropout 0.2 \
+  --use_rslora True \
+  --ddp_backend nccl \
+```
 
-### Evaluation Arguments (eval.py)
+### 2. Evaluation Scripts for Llama-VL-TUG:
+| Script | Task | Evaluation Dataset|
+|----------|-------------| -------- |
+|eval/eval_imagtocode.py| Image2Code | D1 |
+|eval/eval_desctocode.py| Desc2Code  | D1 |
+|eval/eval_imagetodesc.py| Image2Desc | D1 |
+|eval/eval_imagtocodeRealWorld.py| Image2Code | D3 |
+
+**Example Usage**  
+For running Image2Code on D1 Dataset, use the script eval_imagtocode.py and run it as 
+  a python module. Arguments will remain same for all the evaluation scripts.
+```bash
+python3 -m eval.eval_imagtocode \
+    --output_dir checkpoints \
+    --model_path Exploration-Lab/LLama-VL-TUG
+```
+
+### 3. Evaluation Arguments for baselines (eval.py):
 
 | Argument | Description | Possible Values |
 |----------|-------------|---------|
@@ -74,7 +118,7 @@ python eval.py \
   --diag_type Block \
   --model llama \
   --task image2code \
-  --dataset d1 \
+  --dataset D1 \
   --device 0
 ```
 
@@ -100,5 +144,3 @@ European Chapter of the Association for Computational Linguistics (EACL) to be h
       url={https://arxiv.org/abs/2601.18238}, 
 }
 ```
-
-\*Equal Contribution
