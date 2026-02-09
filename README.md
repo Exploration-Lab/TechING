@@ -55,6 +55,10 @@ using D1 and D2 corpus of [TechING](https://huggingface.co/datasets/Exploration-
 5. **Partial Match Image–Code Pair Q&A**: Identify partial matches between incomplete
    and complete image-code pairs.
 ## How to run experiments
+To run experiments create a virtual environment using the following bash script:
+```bash
+conda env create -f environment.yml
+```
 
 ### 1. Training (train/train.py):
 To train [meta-llama/Llama-3.2-11B-Vision](https://huggingface.co/meta-llama/Llama-3.2-11B-Vision) (LLama-VL-TUG base model) on [TechING](https://huggingface.co/datasets/Exploration-Lab/TechING) dataset, run the following bash script.  
