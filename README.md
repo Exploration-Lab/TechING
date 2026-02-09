@@ -86,16 +86,16 @@ torchrun --nproc_per_node=1 -m train.train \
 ### 2. Evaluation Scripts for Llama-VL-TUG:
 | Script | Task | Evaluation Dataset|
 |----------|-------------| -------- |
-|eval/eval_imagtocode.py| Image2Code | D1 |
+|eval/eval_imagetocode.py| Image2Code | D1 |
 |eval/eval_desctocode.py| Desc2Code  | D1 |
 |eval/eval_imagetodesc.py| Image2Desc | D1 |
-|eval/eval_imagtocodeRealWorld.py| Image2Code | D3 |
+|eval/eval_imagetocodeRealWorld.py| Image2Code | D3 |
 
 **Example Usage**  
-For running Image2Code on D1 Dataset, use the script eval_imagtocode.py and run it as 
+For running Image2Code on D1 Dataset, use the script eval_imagetocode.py and run it as 
   a python module. Arguments will remain same for all the evaluation scripts.
 ```bash
-python3 -m eval.eval_imagtocode \
+python3 -m eval.eval_imagetocode \
     --output_dir checkpoints \
     --model_path Exploration-Lab/LLama-VL-TUG
 ```
