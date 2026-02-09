@@ -55,7 +55,7 @@ using D1 and D2 corpus of [TechING](https://huggingface.co/datasets/Exploration-
 5. **Partial Match Image–Code Pair Q&A**: Identify partial matches between incomplete
    and complete image-code pairs.
 ## How to run experiments
-To run experiments create a virtual environment using the following bash script:
+To run experiments, create a virtual environment with all the dependencies using the following bash script:
 ```bash
 conda env create -f environment.yml
 ```
